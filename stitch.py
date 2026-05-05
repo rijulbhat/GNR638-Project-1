@@ -78,6 +78,12 @@ def load_patches(patch_dir: Path) -> Tuple[List[int], List[np.ndarray]]:
     if not paths:
         raise FileNotFoundError(f"No patch_*.png files found in {patch_dir}")
 
+    global PATCH_SIZE
+    first_image = Image.open(paths[0]).convert("RGB")
+    PATCH_SIZE = first_image.size[0]
+    if first_image.size[0] != first_image.size[1]:
+        raise ValueError(f"{paths[0]} is {first_image.size}; expected a square patch")
+
     patch_ids: List[int] = []
     patches: List[np.ndarray] = []
     for path in paths:
